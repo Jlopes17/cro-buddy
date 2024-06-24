@@ -224,6 +224,20 @@ const suggestions = {
     ],
 };
 
+const descriptions = {
+    style: "Change the style of the selected element. Example: 'color: red;'.",
+    innerHTML: "Change the inner HTML content of the selected element.",
+    outerHTML: "Change the outer HTML content of the selected element.",
+    textContent: "Change the text content of the selected element.",
+    attribute: "Change an attribute of the selected element. Example: 'src: new_image.jpg'.",
+    remove: "Remove the selected element from the DOM.",
+    click: "Add a click event to the selected element. Example: 'alert('Clicked!');'.",
+    before: "Insert HTML content before the selected element.",
+    after: "Insert HTML content after the selected element.",
+    prepend: "Insert HTML content at the beginning of the selected element.",
+    append: "Insert HTML content at the end of the selected element."
+};
+
 function formatHTML() {
     let htmlCodeElement = document.getElementById('htmlCode');
     let formattedHTML = html_beautify(htmlCodeElement.value, {
@@ -231,6 +245,12 @@ function formatHTML() {
         space_in_empty_paren: true
     });
     htmlCodeElement.value = formattedHTML;
+}
+
+function updateDescription() {
+    let changeType = document.getElementById('changeType').value;
+    let descriptionArea = document.getElementById('descriptionArea');
+    descriptionArea.textContent = descriptions[changeType] || '';
 }
 
 function suggestAttributes() {
@@ -355,10 +375,10 @@ function generateCode() {
                 jsCode += `let element = document.getElementById('${selector}');\n`;
                 break;
             case 'class':
-                jsCode += `document.querySelectorAll('.${selector}').forEach(function(element) {\n`;
+                jsCode += `let element = document.querySelector('.${selector}');\n`;
                 break;
             case 'data':
-                jsCode += `document.querySelectorAll('[data-${selector}]').forEach(function(element) {\n`;
+                jsCode += `let element = document.querySelector('[data-${selector}]');\n`;
                 break;
             default:
                 alert('Invalid selector type.');
@@ -368,89 +388,78 @@ function generateCode() {
 
     switch (changeType) {
         case 'style':
-            jsCode += `    element.style.${changeValue};\n`;
+            jsCode += `element.style.cssText = '${changeValue}';`;
             break;
         case 'innerHTML':
-            jsCode += `    element.innerHTML = '${changeValue}';\n`;
+            jsCode += `element.innerHTML = \`${changeValue}\`;`;
             break;
         case 'outerHTML':
-            jsCode += `    element.outerHTML = '${changeValue}';\n`;
+            jsCode += `element.outerHTML = \`${changeValue}\`;`;
             break;
         case 'textContent':
-            jsCode += `    element.textContent = '${changeValue}';\n`;
+            jsCode += `element.textContent = \`${changeValue}\`;`;
             break;
         case 'attribute':
-            let parts = changeValue.split(':');
-            if (parts.length !== 2) {
-                alert('Invalid attribute change format. Use "attributeName: value" format.');
+            const [attr, value] = changeValue.split(':').map(str => str.trim());
+            if (attr && value) {
+                jsCode += `element.setAttribute('${attr}', '${value}');`;
+            } else {
+                alert('Please enter a valid attribute and value in the format "attribute: value".');
                 return;
             }
-            let attributeName = parts[0].trim();
-            let attributeValue = parts[1].trim();
-            jsCode += `    element.setAttribute('${attributeName}', '${attributeValue}');\n`;
             break;
         case 'remove':
-            jsCode += `    element.remove();\n`;
+            jsCode += `element.remove();`;
             break;
         case 'click':
-            jsCode += `    element.onclick = function() { ${changeValue} };\n`;
+            jsCode += `element.addEventListener('click', function() { ${changeValue} });`;
             break;
         case 'before':
-            jsCode += `    element.insertAdjacentHTML('beforebegin', '${changeValue}');\n`;
+            jsCode += `element.insertAdjacentHTML('beforebegin', \`${changeValue}\`);`;
             break;
         case 'after':
-            jsCode += `    element.insertAdjacentHTML('afterend', '${changeValue}');\n`;
+            jsCode += `element.insertAdjacentHTML('afterend', \`${changeValue}\`);`;
             break;
         case 'prepend':
-            jsCode += `    element.insertAdjacentHTML('afterbegin', '${changeValue}');\n`;
+            jsCode += `element.insertAdjacentHTML('afterbegin', \`${changeValue}\`);`;
             break;
         case 'append':
-            jsCode += `    element.insertAdjacentHTML('beforeend', '${changeValue}');\n`;
+            jsCode += `element.insertAdjacentHTML('beforeend', \`${changeValue}\`);`;
             break;
         default:
-            alert('Unknown change type.');
+            alert('Invalid change type.');
             return;
     }
 
-    if (selectorType !== 'id' && selectedInstance === '') {
-        jsCode += `});\n`;
-    }
-
-    // Display generated JavaScript code
+    // Output the generated code
     document.getElementById('jsCode').textContent = jsCode;
 }
 
 function copyCode() {
-    // Select the text inside the pre element
-    let jsCode = document.getElementById('jsCode');
+    let jsCodeElement = document.getElementById('jsCode');
     let range = document.createRange();
-    range.selectNode(jsCode);
+    range.selectNode(jsCodeElement);
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
-
-    // Copy the text to the clipboard
-    try {
-        document.execCommand('copy');
-        alert('Code copied to clipboard');
-    } catch (err) {
-        alert('Failed to copy code');
-    }
-
-    // Deselect the text
+    document.execCommand('copy');
     window.getSelection().removeAllRanges();
+    alert('Code copied to clipboard!');
 }
 
-function getSelectorString(selectorType, selector) {
-    switch (selectorType) {
+function getSelectorString(type, value) {
+    switch (type) {
         case 'id':
-            return `#${selector}`;
+            return `#${value}`;
         case 'class':
-            return `.${selector}`;
+            return `.${value}`;
         case 'data':
-            return `[data-${selector}]`;
+            return `[data-${value}]`;
         default:
             return '';
     }
 }
 
+// Add event listeners
 document.getElementById('selector').addEventListener('input', countSelectorOccurrences);
+document.getElementById('selectorType').addEventListener('change', countSelectorOccurrences);
+document.getElementById('selectorList').addEventListener('change', countSelectorOccurrences);

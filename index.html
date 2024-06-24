@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>CRO Buddy</h1> <!-- Changed H1 here -->
+        <h1>CRO code assistant</h1>
         <label for="htmlCode">Paste HTML Code:</label>
         <textarea id="htmlCode" rows="10" placeholder="Paste your HTML code here..." onblur="formatHTML()"></textarea>
 
@@ -35,7 +35,7 @@
         <br> <!-- Line break -->
 
         <label for="changeType">Change Type:</label>
-        <select id="changeType" onchange="suggestAttributes()">
+        <select id="changeType" onchange="updateDescription(); suggestAttributes()">
             <option value="" disabled selected>Select type</option>
             <option value="style">Style</option>
             <option value="innerHTML">Inner HTML</option>
@@ -50,6 +50,8 @@
             <option value="append">Append HTML</option>
         </select>
 
+        <div id="descriptionArea" class="description-area"></div>
+
         <label for="changeValue">Change Value:</label>
         <input type="text" id="changeValue">
         <div id="suggestionArea" class="suggestion-area"></div>
@@ -58,7 +60,7 @@
         <button onclick="copyCode()">Copy Code</button>
 
         <h2>Generated JavaScript Code:</h2>
-        <pre id="jsCode"></pre>
+        <pre id="jsCode" class="pre-container"></pre>
     </div>
     <script src="script.js"></script>
 </body>
