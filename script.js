@@ -226,8 +226,8 @@ const suggestions = {
 
 const descriptions = {
     style: "Change the style of the selected element. Example: 'color: red;'.",
-    innerHTML: "Change the inner HTML content of the selected element.",
-    outerHTML: "Change the outer HTML content of the selected element.",
+    innerHTML: "The innerHTML property sets or returns the HTML content (inner HTML) of an element.",
+    outerHTML: "The outerHTML property sets or returns the HTML element, including attributes, start tag, and end tag.",
     textContent: "Change the text content of the selected element.",
     attribute: "Change an attribute of the selected element. Example: 'src: new_image.jpg'.",
     remove: "Remove the selected element from the DOM.",
