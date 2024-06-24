@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRO code assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.0/js/lib/beautify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-beautify@1.14.0/js/lib/beautify-html.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>CRO code assistant</h1>
+        <label for="htmlCode">Paste HTML Code:</label>
+        <textarea id="htmlCode" rows="10" placeholder="Paste your HTML code here..." onblur="formatHTML()"></textarea>
+
+        <br>
+
+        <label for="selectorType">Selector Type:</label>
+        <select id="selectorType">
+            <option value="" disabled selected>Select</option>
+            <option value="id">ID</option>
+            <option value="class">Class</option>
+            <option value="data">Data Attribute</option>
+        </select>
+
+        <label for="selector">Selector:</label>
+        <input type="text" id="selector">
+
+        <div id="selectorCount" class="selector-count"></div>
+
+        <label for="selectorList">Select Instance (if multiple):</label>
+        <select id="selectorList" style="display: none;"></select>
+
+        <br>
+
+        <label for="changeType">Change Type:</label>
+        <select id="changeType" onchange="suggestAttributes()">
+            <option value="" disabled selected>Select type</option>
+            <option value="style">Style</option>
+            <option value="innerHTML">Inner HTML</option>
+            <option value="outerHTML">Outer HTML</option>
+            <option value="textContent">Text Content</option>
+            <option value="attribute">Attribute</option>
+            <option value="remove">Remove Element</option>
+            <option value="click">Click Event</option>
+            <option value="before">Insert HTML Before</option>
+            <option value="after">Insert HTML After</option>
+            <option value="prepend">Prepend HTML</option>
+            <option value="append">Append HTML</option>
+        </select>
+
+        <label for="changeValue">Change Value:</label>
+        <input type="text" id="changeValue">
+        <div id="suggestionArea" class="suggestion-area"></div>
+
+        <button onclick="generateCode()">Generate Code</button>
+        <button onclick="copyCode()">Copy Code</button>
+
+        <h2>Generated JavaScript Code:</h2>
+        <pre id="jsCode"></pre>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
